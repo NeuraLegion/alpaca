@@ -160,6 +160,10 @@ typename std::enable_if<!std::is_same_v<Container, std::ifstream>, int_t>::type
 decode_varint_7(Container &input, std::size_t &current_index) {
   int_t ret = 0;
   for (std::size_t i = 0; i < sizeof(int_t); ++i) {
+    if (current_index + i >= input.size()) {
+      current_index = input.size();
+      return ret;
+    }
     ret |= (static_cast<int_t>(input[current_index + i] & 127)) << (7 * i);
     // If the next-byte flag is set
     if (!(input[current_index + i] & 128)) {
