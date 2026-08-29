@@ -73,6 +73,9 @@ bool from_bytes_to_vector(std::vector<T> &value, Container &bytes,
   size_t_serialized_type size = 0;
   detail::from_bytes<O, size_t_serialized_type>(size, bytes, current_index, end_index,
                                      error_code);
+  if (error_code) {
+    return false;
+  }
 
   if (size > end_index - current_index) {
     // size is greater than the number of bytes remaining
