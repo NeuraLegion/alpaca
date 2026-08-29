@@ -88,6 +88,10 @@ void from_bytes_to_map(T &map, Container &bytes, std::size_t &current_index,
   detail::from_bytes<O, size_t_serialized_type>(size, bytes, current_index, end_index,
                                      error_code);
 
+  if (error_code) {
+    return;
+  }
+
   if (size > end_index - current_index) {
     // size is greater than the number of bytes remaining
     error_code = std::make_error_code(std::errc::value_too_large);
