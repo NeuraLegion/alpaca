@@ -108,9 +108,16 @@ from_bytes(T &value, Container &bytes, std::size_t &current_index,
   }
 
   constexpr auto num_bytes_to_read = sizeof(T);
-  if (end_index < num_bytes_to_read) {
-    /// TODO: report error
+  if (end_index - current_index < num_bytes_to_read) {
+    error_code = std::make_error_code(std::errc::message_size);
     return false;
+  }
+
+  if constexpr (std::is_same_v<T, bool>) {
+    if (bytes[current_index] > 1) {
+      error_code = std::make_error_code(std::errc::invalid_argument);
+      return false;
+    }
   }
 
   get_aligned<O>(value, &bytes[0], current_index);
